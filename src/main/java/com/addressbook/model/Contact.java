@@ -36,6 +36,10 @@ public class Contact {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+    
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
     public void setAddress(String address) {
         this.address = address;
