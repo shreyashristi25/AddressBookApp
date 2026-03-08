@@ -54,4 +54,15 @@ public class AddressBookService {
         return repository.sortByName(addressBookName);
     }
 
+    public List<Contact> sortByCity(String addressBookName) {
+        return repository.sortByCity(addressBookName);
+    }
+
+    public List<Contact> sortByState(String addressBookName) {
+        return repository.sortByState(addressBookName);
+    }
+
+    public List<Contact> sortByZip(String addressBookName) {
+        return repository.sortByZip(addressBookName);
+    }
 }

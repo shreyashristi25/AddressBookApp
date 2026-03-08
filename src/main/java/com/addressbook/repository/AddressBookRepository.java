@@ -86,4 +86,31 @@ public class AddressBookRepository {
                 .sorted(Comparator.comparing(Contact::getFirstName))
                 .toList();
     }
+    
+    public List<Contact> sortByCity(String bookName) {
+
+        List<Contact> contacts = addressBooks.get(bookName);
+
+        return contacts.stream()
+                .sorted(Comparator.comparing(Contact::getCity))
+                .toList();
+    }
+    
+    public List<Contact> sortByState(String bookName) {
+
+        List<Contact> contacts = addressBooks.get(bookName);
+
+        return contacts.stream()
+                .sorted(Comparator.comparing(Contact::getState))
+                .toList();
+    }
+    
+    public List<Contact> sortByZip(String bookName) {
+
+        List<Contact> contacts = addressBooks.get(bookName);
+
+        return contacts.stream()
+                .sorted(Comparator.comparing(Contact::getZip))
+                .toList();
+    }
 }

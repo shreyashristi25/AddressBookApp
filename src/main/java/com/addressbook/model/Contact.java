@@ -36,6 +36,10 @@ public class Contact {
     public String getState() {
         return state;
     }
+    
+    public String getZip() {
+        return zip;
+    }
 
     @Override
     public boolean equals(Object obj) {
