@@ -32,6 +32,17 @@ public class AddressBookApp {
         System.out.println("Reading contacts from file:");
 
         service.readContactsFromFile(filePath);
+        
+        System.out.println("Enter AddressBook name:");
+        String bookname = sc.nextLine();
+
+        String filepath = "contacts.csv";
+
+        service.writeContactsToCSV(bookname, filepath);
+
+        System.out.println("Reading contacts from CSV file:");
+
+        service.readContactsFromCSV(filepath);
 
         sc.close();
     }

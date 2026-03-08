@@ -1,12 +1,13 @@
 package com.addressbook.repository;
 import java.io.FileWriter;
+import com.opencsv.CSVReader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.*;
 import com.addressbook.model.Contact;
-
+import com.opencsv.CSVWriter;
 public class AddressBookRepository {
 
     private Map<String, List<Contact>> addressBooks = new HashMap<>();
@@ -134,18 +135,59 @@ public class AddressBookRepository {
         }
         }
         
-        public void readContactsFromFile(String filePath) {
+    public void readContactsFromFile(String filePath) {
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+    	try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+    		
+    		String line;
+    		
+    		while ((line = reader.readLine()) != null) {
+    			System.out.println(line);
+    		}
 
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
     }
-}
+    public void writeContactsToCSV(String bookName, String filePath) {
+
+    	List<Contact> contacts = addressBooks.get(bookName);
+
+    	try (CSVWriter writer = new CSVWriter(new FileWriter(filePath))) {
+
+    		String[] header = {"FirstName", "LastName", "City", "State", "Zip"};
+    		writer.writeNext(header);
+
+    		for (Contact contact : contacts) {
+    			String[] data = {
+    					contact.getFirstName(),
+    					contact.getLastName(),
+    					contact.getCity(),
+    					contact.getState(),
+    					contact.getZip()
+    			};
+    			writer.writeNext(data);
+    		}
+
+    		System.out.println("Contacts written to CSV successfully");
+
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	} 
+    	
+    	public void readContactsFromCSV(String filePath) {
+
+    	    try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+
+    	        String[] line;
+
+    	        while ((line = reader.readNext()) != null) {
+    	            System.out.println(String.join(", ", line));
+    	        }
+
+    	    } catch (Exception e) {
+    	        e.printStackTrace();
+    	    }
+    }
+    }
