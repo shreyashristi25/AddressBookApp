@@ -1,7 +1,7 @@
 package com.addressbook.repository;
 
 import java.util.*;
-
+import java.util.stream.*;
 import com.addressbook.model.Contact;
 
 public class AddressBookRepository {
@@ -48,5 +48,19 @@ public class AddressBookRepository {
                 .flatMap(List::stream)
                 .filter(contact -> contact.getState().equalsIgnoreCase(state))
                 .toList();
+    }
+    
+    public Map<String, List<Contact>> viewPersonsByCity() {
+
+        return addressBooks.values().stream()
+                .flatMap(List::stream)
+                .collect(Collectors.groupingBy(Contact::getCity));
+    }
+    
+    public Map<String, List<Contact>> viewPersonsByState() {
+
+        return addressBooks.values().stream()
+                .flatMap(List::stream)
+                .collect(Collectors.groupingBy(Contact::getState));
     }
 }

@@ -1,6 +1,6 @@
 package com.addressbook.service;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +32,14 @@ public class AddressBookService {
 
     public List<Contact> searchByState(String state) {
         return repository.searchByState(state);
+    }
+    
+    public Map<String, List<Contact>> viewPersonsByCity() {
+        return repository.viewPersonsByCity();
+    }
+
+    public Map<String, List<Contact>> viewPersonsByState() {
+        return repository.viewPersonsByState();
     }
 
 }
