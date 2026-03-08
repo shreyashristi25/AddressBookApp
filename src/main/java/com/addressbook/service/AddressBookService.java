@@ -1,5 +1,7 @@
 package com.addressbook.service;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +14,15 @@ public class AddressBookService {
     @Autowired
     private AddressBookRepository repository;
 
-    public void addContact(Contact contact) {
-        repository.addContact(contact);
+    public void createAddressBook(String name) {
+        repository.createAddressBook(name);
     }
 
-    public List<Contact> getContacts() {
-        return repository.getContacts();
+    public void addContact(String addressBookName, Contact contact) {
+        repository.addContact(addressBookName, contact);
+    }
+
+    public List<Contact> getContacts(String addressBookName) {
+        return repository.getContacts(addressBookName);
     }
 }
