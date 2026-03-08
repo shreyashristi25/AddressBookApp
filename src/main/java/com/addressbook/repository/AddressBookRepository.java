@@ -1,5 +1,6 @@
 package com.addressbook.repository;
 import java.io.FileWriter;
+import com.google.gson.Gson;
 import com.opencsv.CSVReader;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -8,6 +9,9 @@ import java.util.*;
 import java.util.stream.*;
 import com.addressbook.model.Contact;
 import com.opencsv.CSVWriter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 public class AddressBookRepository {
 
     private Map<String, List<Contact>> addressBooks = new HashMap<>();
@@ -189,5 +193,39 @@ public class AddressBookRepository {
     	    } catch (Exception e) {
     	        e.printStackTrace();
     	    }
+    	    }
+    	    
+    	    public void writeContactsToJSON(String bookName, String filePath) {
+
+    	        List<Contact> contacts = addressBooks.get(bookName);
+
+    	        Gson gson = new Gson();
+
+    	        try (FileWriter writer = new FileWriter(filePath)) {
+
+    	            gson.toJson(contacts, writer);
+
+    	            System.out.println("Contacts written to JSON file successfully");
+
+    	        } catch (Exception e) {
+    	            e.printStackTrace();
+    	        }
+    	        }
+    	        
+    	        public void readContactsFromJSON(String filePath) {
+
+    	            Gson gson = new Gson();
+
+    	            try (FileReader reader = new FileReader(filePath)) {
+
+    	                Type contactListType = new TypeToken<List<Contact>>() {}.getType();
+
+    	                List<Contact> contacts = gson.fromJson(reader, contactListType);
+
+    	                contacts.forEach(System.out::println);
+
+    	            } catch (Exception e) {
+    	                e.printStackTrace();
+    	            }
     }
     }

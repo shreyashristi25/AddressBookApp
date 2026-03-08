@@ -81,4 +81,12 @@ public class AddressBookService {
     public void readContactsFromCSV(String filePath) {
         repository.readContactsFromCSV(filePath);
     }
+    
+    public void writeContactsToJSON(String bookName, String filePath) {
+        repository.writeContactsToJSON(bookName, filePath);
+    }
+
+    public void readContactsFromJSON(String filePath) {
+        repository.readContactsFromJSON(filePath);
+    }
 }

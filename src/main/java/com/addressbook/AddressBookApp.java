@@ -43,6 +43,17 @@ public class AddressBookApp {
         System.out.println("Reading contacts from CSV file:");
 
         service.readContactsFromCSV(filepath);
+        
+        System.out.println("Enter AddressBook name:");
+        String nameOfBook = sc.nextLine();
+
+        String pathOfFile= "contacts.json";
+
+        service.writeContactsToJSON(nameOfBook, pathOfFile);
+
+        System.out.println("Reading contacts from JSON file:");
+
+        service.readContactsFromJSON(pathOfFile);
 
         sc.close();
     }
