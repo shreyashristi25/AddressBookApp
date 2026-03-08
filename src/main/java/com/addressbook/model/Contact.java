@@ -4,8 +4,14 @@ import java.util.Objects;
 
 public class Contact {
 
-    private String firstName;
+	private String firstName;
     private String lastName;
+    private String address;
+    private String city;
+    private String state;
+    private String zip;
+    private String phoneNumber;
+    private String email;
 
     public String getFirstName() {
         return firstName;
@@ -21,6 +27,14 @@ public class Contact {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+    
+    public String getCity() {
+        return city;
+    }
+
+    public String getState() {
+        return state;
     }
 
     @Override

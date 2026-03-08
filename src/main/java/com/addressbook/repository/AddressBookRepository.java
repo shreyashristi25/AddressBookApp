@@ -33,4 +33,20 @@ public class AddressBookRepository {
     public List<Contact> getContacts(String addressBookName) {
         return addressBooks.get(addressBookName);
     }
+    
+    public List<Contact> searchByCity(String city) {
+
+        return addressBooks.values().stream()
+                .flatMap(List::stream)
+                .filter(contact -> contact.getCity().equalsIgnoreCase(city))
+                .toList();
+    }
+    
+    public List<Contact> searchByState(String state) {
+
+        return addressBooks.values().stream()
+                .flatMap(List::stream)
+                .filter(contact -> contact.getState().equalsIgnoreCase(state))
+                .toList();
+    }
 }

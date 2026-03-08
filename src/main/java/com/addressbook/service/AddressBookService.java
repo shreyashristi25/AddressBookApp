@@ -25,5 +25,13 @@ public class AddressBookService {
     public List<Contact> getContacts(String addressBookName) {
         return repository.getContacts(addressBookName);
     }
+    
+    public List<Contact> searchByCity(String city) {
+        return repository.searchByCity(city);
+    }
+
+    public List<Contact> searchByState(String state) {
+        return repository.searchByState(state);
+    }
 
 }
