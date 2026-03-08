@@ -28,4 +28,16 @@ public class Contact {
     	this.phoneNumber = phoneNumber ;
     	this.email = email ;
     }
+    
+    public String getFirstName() {
+        return firstName;
+    }
+    
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }

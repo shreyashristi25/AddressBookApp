@@ -18,4 +18,14 @@ public class AddressBookRepository {
     public List<Contact> getContacts() {
         return contacts;
     }
+    
+    public void editContact(String name, String newAddress) {
+
+        for (Contact contact : contacts) {
+            if (contact.getFirstName().equalsIgnoreCase(name)) {
+                contact.setAddress(newAddress);
+                System.out.println("Address Updated");
+            }
+        }
+    }
 }
