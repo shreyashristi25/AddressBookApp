@@ -1,47 +1,45 @@
 package com.addressbook.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.Objects;
 
-@Data
 public class Contact {
 
     private String firstName;
     private String lastName;
-    private String address;
-    private String city;
-    private String state;
-    private String zip;
-    private String phoneNumber;
-    private String email;
-    
-    public Contact() {}
-    
-    public Contact(String firstName, String lastName, String address, String city, String state, String xip, String phoneNumber, String email) {
-    	this.firstName = firstName;
-    	this.lastName = lastName; 
-    	this.address = address;
-    	this.city = city ;
-    	this.state = state ;
-    	this.zip = zip ;
-    	this.phoneNumber = phoneNumber ;
-    	this.email = email ;
-    }
-    
+
     public String getFirstName() {
         return firstName;
     }
-    
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+
+        Contact contact = (Contact) obj;
+
+        return firstName.equalsIgnoreCase(contact.firstName) &&
+               lastName.equalsIgnoreCase(contact.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName);
     }
 }
