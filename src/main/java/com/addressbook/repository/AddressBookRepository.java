@@ -77,4 +77,13 @@ public class AddressBookRepository {
                 .flatMap(List::stream)
                 .collect(Collectors.groupingBy(Contact::getState, Collectors.counting()));
     }
+    
+    public List<Contact> sortByName(String bookName) {
+
+        List<Contact> contacts = addressBooks.get(bookName);
+
+        return contacts.stream()
+                .sorted(Comparator.comparing(Contact::getFirstName))
+                .toList();
+    }
 }

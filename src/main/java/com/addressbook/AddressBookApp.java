@@ -1,33 +1,27 @@
 package com.addressbook;
 
+import java.util.List;
 import java.util.Scanner;
+
 import com.addressbook.model.Contact;
-import com.addressbook.repository.AddressBookRepository;
+import com.addressbook.service.AddressBookService;
 
 public class AddressBookApp {
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        AddressBookRepository repo = new AddressBookRepository();
+        AddressBookService service = new AddressBookService();
 
-        System.out.println("Enter Address Book Name:");
+        System.out.println("Enter AddressBook Name:");
         String bookName = sc.nextLine();
 
-        repo.createAddressBook(bookName);
+        List<Contact> sortedContacts = service.sortByName(bookName);
 
-        System.out.println("Enter First Name:");
-        String firstName = sc.nextLine();
+        System.out.println("Sorted Contacts:");
 
-        System.out.println("Enter Last Name:");
-        String lastName = sc.nextLine();
+        sortedContacts.forEach(System.out::println);
 
-        Contact contact = new Contact();
-        contact.setFirstName(firstName);
-        contact.setLastName(lastName);
-
-        repo.addContact(bookName, contact);
-
-        System.out.println("Contact added to " + bookName);
+        sc.close();
     }
 }

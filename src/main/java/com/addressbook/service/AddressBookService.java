@@ -49,5 +49,9 @@ public class AddressBookService {
     public Map<String, Long> countByState() {
         return repository.countByState();
     }
+    
+    public List<Contact> sortByName(String addressBookName) {
+        return repository.sortByName(addressBookName);
+    }
 
 }
