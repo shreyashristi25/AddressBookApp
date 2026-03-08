@@ -28,4 +28,23 @@ public class AddressBookRepository {
             }
         }
     }
+    
+    public void deleteContact(String name) {
+
+        Contact contactToDelete = null;
+
+        for (Contact contact : contacts) {
+            if (contact.getFirstName().equalsIgnoreCase(name)) {
+                contactToDelete = contact;
+                break;
+            }
+        }
+
+        if (contactToDelete != null) {
+            contacts.remove(contactToDelete);
+            System.out.println("Contact deleted successfully");
+        } else {
+            System.out.println("Contact not found");
+        }
+    }
 }
