@@ -41,5 +41,13 @@ public class AddressBookService {
     public Map<String, List<Contact>> viewPersonsByState() {
         return repository.viewPersonsByState();
     }
+    
+    public Map<String, Long> countByCity() {
+        return repository.countByCity();
+    }
+
+    public Map<String, Long> countByState() {
+        return repository.countByState();
+    }
 
 }

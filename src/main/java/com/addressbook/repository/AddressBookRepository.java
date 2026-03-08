@@ -63,4 +63,18 @@ public class AddressBookRepository {
                 .flatMap(List::stream)
                 .collect(Collectors.groupingBy(Contact::getState));
     }
+    
+    public Map<String, Long> countByCity() {
+
+        return addressBooks.values().stream()
+                .flatMap(List::stream)
+                .collect(Collectors.groupingBy(Contact::getCity, Collectors.counting()));
+    }
+    
+    public Map<String, Long> countByState() {
+
+        return addressBooks.values().stream()
+                .flatMap(List::stream)
+                .collect(Collectors.groupingBy(Contact::getState, Collectors.counting()));
+    }
 }
