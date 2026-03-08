@@ -21,6 +21,17 @@ public class AddressBookApp {
         System.out.println("Sorted Contacts:");
 
         sortedContacts.forEach(System.out::println);
+        
+        System.out.println("Enter AddressBook name:");
+        String book = sc.nextLine();
+
+        String filePath = "contacts.txt";
+
+        service.writeContactsToFile(book, filePath);
+
+        System.out.println("Reading contacts from file:");
+
+        service.readContactsFromFile(filePath);
 
         sc.close();
     }

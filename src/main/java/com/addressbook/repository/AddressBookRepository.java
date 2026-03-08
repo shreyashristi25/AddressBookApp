@@ -1,5 +1,8 @@
 package com.addressbook.repository;
-
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.*;
 import com.addressbook.model.Contact;
@@ -112,5 +115,37 @@ public class AddressBookRepository {
         return contacts.stream()
                 .sorted(Comparator.comparing(Contact::getZip))
                 .toList();
+    }
+    
+    public void writeContactsToFile(String bookName, String filePath) {
+
+        List<Contact> contacts = addressBooks.get(bookName);
+
+        try (FileWriter writer = new FileWriter(filePath)) {
+
+            for (Contact contact : contacts) {
+                writer.write(contact.toString() + "\n");
+            }
+
+            System.out.println("Contacts written to file successfully");
+
+        } catch (IOException e) {
+            e.printStackTrace() ;
+        }
+        }
+        
+        public void readContactsFromFile(String filePath) {
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 }

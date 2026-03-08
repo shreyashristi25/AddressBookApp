@@ -65,4 +65,12 @@ public class AddressBookService {
     public List<Contact> sortByZip(String addressBookName) {
         return repository.sortByZip(addressBookName);
     }
+    
+    public void writeContactsToFile(String bookName, String filePath) {
+        repository.writeContactsToFile(bookName, filePath);
+    }
+
+    public void readContactsFromFile(String filePath) {
+        repository.readContactsFromFile(filePath);
+    }
 }
