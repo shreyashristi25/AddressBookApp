@@ -330,4 +330,42 @@ public class AddressBookRepository {
 
         return null;
     }
+    
+    public List<Contact> getContactsByDateRange(String startDate, String endDate) {
+
+        List<Contact> contacts = new ArrayList<>();
+
+        try {
+
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/addressbook_service",
+                    "root",
+                    "Shreya@2002");
+
+            String query = "SELECT * FROM contact WHERE date_added BETWEEN ? AND ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, startDate);
+            statement.setString(2, endDate);
+
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next()) {
+
+                Contact contact = new Contact();
+
+                contact.setFirstName(rs.getString("first_name"));
+                contact.setLastName(rs.getString("last_name"));
+                contact.setCity(rs.getString("city"));
+                contact.setAddress(rs.getString("address"));
+
+                contacts.add(contact);
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return contacts;
+    }
 }

@@ -37,4 +37,13 @@ public class AddressBookServiceTest {
 
 	     assertEquals(contactFromDB, contactInMemory);
 	 }
+	 
+	 @Test
+	 void givenDateRange_whenRetrieved_shouldReturnContacts() {
+
+	     List<Contact> contacts = addressBookService
+	             .getContactsAddedBetween("2024-01-01", "2024-12-31");
+
+	     assertFalse(contacts.isEmpty());
+	 }
 }

@@ -13,6 +13,7 @@ public class Contact {
     private String phoneNumber;
     private String email;
 
+    public Contact() {}
     public Contact(String firstName, String lastName, String address,
             String city, String state, String zip,
             String phoneNumber, String email) {
@@ -49,6 +50,9 @@ public class Contact {
 
     public void setCity(String city) {
         this.city =  city;
+    }
+    public void setAddress(String address) {
+        this.address = address ;
     }
 
     public String getState() {

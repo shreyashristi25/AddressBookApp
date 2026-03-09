@@ -125,5 +125,10 @@ public class AddressBookService {
                 .findFirst()
                 .orElse(null);
     }
+    
+    public List<Contact> getContactsAddedBetween(String startDate, String endDate) {
+
+        return repository.getContactsByDateRange(startDate, endDate);
+    }
    
 }
