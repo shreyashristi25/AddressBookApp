@@ -1,4 +1,7 @@
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;import com.addressbook.model.Contact;
+import com.addressbook.service.AddressBookService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.addressbook.service.*;
 import org.junit.jupiter.api.Test;
@@ -73,4 +76,63 @@ public class AddressBookServiceTest {
 
 	 assertTrue(result);
 	 }
+	 
+	 private AddressBookService service;
+
+	    @BeforeEach
+	    void setup() {
+	        service = new AddressBookService();
+	        service.createAddressBook("Family");
+	    }
+
+	    @Test
+	    void testAddSingleContact() {
+	        Contact contact = new Contact("Rahul","Sharma","Delhi","Delhi","110001","9876543210","rahul@gmail.com");
+	        service.addContact("Family", contact);
+
+	        List<Contact> contacts = service.getContacts("Family");
+	        assertEquals(1, contacts.size());
+	        assertEquals("Rahul", contacts.get(0).getFirstName());
+	    }
+
+	    @Test
+	    void testAddDuplicateContact() {
+	        Contact contact1 = new Contact("Aman","Verma","Mumbai","Maharashtra","400001","9876543222","aman@gmail.com");
+	        Contact contact2 = new Contact("Aman","Verma","Mumbai","Maharashtra","400001","9876543222","aman@gmail.com");
+
+	        service.addContact("Family", contact1);
+	        service.addContact("Family", contact2); // duplicate
+
+	        List<Contact> contacts = service.getContacts("Family");
+	        assertEquals(1, contacts.size(), "Duplicate should not be added");
+	    }
+
+	    @Test
+	    void testSearchByCity() {
+	        service.addContact("Family", new Contact("Neha","Gupta","Pune","Maharashtra","411001","9876543333","neha@gmail.com"));
+	        service.addContact("Family", new Contact("Rahul","Sharma","Delhi","Delhi","110001","9876543210","rahul@gmail.com"));
+
+	        List<Contact> delhiContacts = service.searchByCity("Delhi");
+	        assertEquals(1, delhiContacts.size());
+	        assertEquals("Rahul", delhiContacts.get(0).getFirstName());
+	    }
+	    
+	    @Test
+	    void testSortByName() {
+	        service.addContact("Family", new Contact("Neha","Gupta","Pune","Maharashtra","411001","9876543333","neha@gmail.com"));
+	        service.addContact("Family", new Contact("Aman","Verma","Mumbai","Maharashtra","400001","9876543222","aman@gmail.com"));
+
+	        List<Contact> sorted = service.sortByName("Family");
+	        assertEquals("Aman", sorted.get(0).getFirstName());
+	        assertEquals("Neha", sorted.get(1).getFirstName());
+	    }
+
+	    @Test
+	    void testGetContactsCount() {
+	        service.addContact("Family", new Contact("Rahul","Sharma","Delhi","Delhi","110001","9876543210","rahul@gmail.com"));
+	        service.addContact("Family", new Contact("Aman","Verma","Mumbai","Maharashtra","400001","9876543222","aman@gmail.com"));
+
+	        List<Contact> contacts = service.getContacts("Family");
+	        assertEquals(2, contacts.size());
+	    }
 }

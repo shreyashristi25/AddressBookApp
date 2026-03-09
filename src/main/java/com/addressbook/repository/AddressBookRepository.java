@@ -490,4 +490,48 @@ public class AddressBookRepository {
 
         return false;
     }
+    
+    public void addMultipleContacts(List<Contact> contacts) {
+
+        contacts.forEach(contact -> {
+            Runnable task = () -> {
+                addContactToDB(contact);
+            };
+
+            Thread thread = new Thread(task);
+            thread.start();
+        });
+    }
+    
+    public void addContactToDB(Contact contact) {
+
+        String url = "jdbc:mysql://localhost:3306/addressbook_service";
+        String user = "root";
+        String password = "Shreya@2002";
+
+        String sql = "INSERT INTO contacts(first_name,last_name,city,state,zip,phone,email) VALUES(?,?,?,?,?,?,?)";
+
+        try (Connection con = DriverManager.getConnection(url, user, password);
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            con.setAutoCommit(false);   // Start transaction
+
+            ps.setString(1, contact.getFirstName());
+            ps.setString(2, contact.getLastName());
+            ps.setString(3, contact.getCity());
+            ps.setString(4, contact.getState());
+            ps.setString(5, contact.getZip());
+            ps.setString(6, contact.getPhone());
+            ps.setString(7, contact.getEmail());
+
+            ps.executeUpdate();
+
+            con.commit();   // commit transaction
+
+            System.out.println("Contact Added by Thread: " + Thread.currentThread().getName());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

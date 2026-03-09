@@ -143,4 +143,12 @@ public class AddressBookService {
         return repository.addNewContact(contact);
     }
    
+    public void addSampleContacts() {
+        List<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact("Rahul","Sharma","Delhi","Delhi","110001","9876543210","rahul@gmail.com"));
+        contacts.add(new Contact("Aman","Verma","Mumbai","Maharashtra","400001","9876543222","aman@gmail.com"));
+        contacts.add(new Contact("Neha","Gupta","Pune","Maharashtra","411001","9876543333","neha@gmail.com"));
+
+        repository.addMultipleContacts(contacts);
+    }
 }
