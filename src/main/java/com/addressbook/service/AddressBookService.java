@@ -93,4 +93,11 @@ public class AddressBookService {
     public List<Contact> getAllContactsFromDB() {
         return repository.getAllContactsFromDB();
     }
+    
+
+    public AddressBookService() {
+        repository = new AddressBookRepository();   // FIX
+    }
+
+   
 }
