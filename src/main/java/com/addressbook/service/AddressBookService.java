@@ -130,5 +130,13 @@ public class AddressBookService {
 
         return repository.getContactsByDateRange(startDate, endDate);
     }
+    
+    public Map<String, Integer> getContactCountByCity() {
+        return repository.getContactCountByCity();
+    }
+
+    public Map<String, Integer> getContactCountByState() {
+        return repository.getContactCountByState();
+    }
    
 }

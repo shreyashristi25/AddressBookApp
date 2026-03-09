@@ -368,4 +368,66 @@ public class AddressBookRepository {
 
         return contacts;
     }
+    
+    public Map<String, Integer> getContactCountByCity() {
+
+        Map<String, Integer> cityCountMap = new HashMap<>();
+
+        try {
+
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/addressbook_service",
+                    "root",
+                    "Shreya@2002");
+
+            String query = "SELECT city, COUNT(*) as total FROM contact GROUP BY city";
+
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+
+            while (rs.next()) {
+
+                String city = rs.getString("city");
+                int count = rs.getInt("total");
+
+                cityCountMap.put(city, count);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cityCountMap;
+    }
+    
+    public Map<String, Integer> getContactCountByState() {
+
+        Map<String, Integer> stateCountMap = new HashMap<>();
+
+        try {
+
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/addressbook_service",
+                    "root",
+                    "Shreya@2002");
+
+            String query = "SELECT state, COUNT(*) as total FROM contact GROUP BY state";
+
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+
+            while (rs.next()) {
+
+                String state = rs.getString("state");
+                int count = rs.getInt("total");
+
+                stateCountMap.put(state, count);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return stateCountMap;
+    }
 }

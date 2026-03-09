@@ -1,7 +1,8 @@
 import static org.junit.jupiter.api.Assertions.*;
+
 import com.addressbook.service.*;
 import org.junit.jupiter.api.Test;
-import java.util.List;
+import java.util.*;
 import com.addressbook.service.*;
 import com.addressbook.model.*;
 
@@ -45,5 +46,13 @@ public class AddressBookServiceTest {
 	             .getContactsAddedBetween("2024-01-01", "2024-12-31");
 
 	     assertFalse(contacts.isEmpty());
+	 }
+	 
+	 @Test
+	 void givenContacts_whenCountedByCity_shouldReturnProperCount() {
+
+	     Map<String, Integer> cityCount = addressBookService.getContactCountByCity();
+
+	     assertFalse(cityCount.isEmpty());
 	 }
 }
