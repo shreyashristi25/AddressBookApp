@@ -89,4 +89,8 @@ public class AddressBookService {
     public void readContactsFromJSON(String filePath) {
         repository.readContactsFromJSON(filePath);
     }
+    
+    public List<Contact> getAllContactsFromDB() {
+        return repository.getAllContactsFromDB();
+    }
 }

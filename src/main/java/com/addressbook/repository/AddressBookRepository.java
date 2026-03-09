@@ -1,5 +1,7 @@
 package com.addressbook.repository;
 import java.io.FileWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import com.google.gson.Gson;
 import com.opencsv.CSVReader;
 import java.io.BufferedReader;
@@ -10,6 +12,8 @@ import java.util.stream.*;
 import com.addressbook.model.Contact;
 import com.opencsv.CSVWriter;
 import com.google.gson.Gson;
+import java.sql.Statement;
+import java.sql.ResultSet;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 public class AddressBookRepository {
@@ -228,4 +232,45 @@ public class AddressBookRepository {
     	                e.printStackTrace();
     	            }
     }
+    	        
+    public List<Contact> getAllContactsFromDB() {
+
+        List<Contact> contacts = new ArrayList<>();
+
+        String url = "jdbc:mysql://localhost:3306/addressbook_service";
+        String user = "root";
+        String password = "Shreya@2002";
+
+        try {
+
+            Connection con = DriverManager.getConnection(url, user, password);
+
+            String query = "SELECT * FROM contacts";
+
+            Statement stmt = con.createStatement();
+
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+
+                Contact contact = new Contact(
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("address"),
+                        rs.getString("city"),
+                        rs.getString("state"),
+                        rs.getString("zip"),
+                        rs.getString("phone"),
+                        rs.getString("email")
+                );
+
+                contacts.add(contact);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return contacts;
     }
+}
