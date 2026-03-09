@@ -14,6 +14,7 @@ public class AddressBookService {
     @Autowired
     private AddressBookRepository repository;
 
+    private List<Contact> contacts = new ArrayList<>();
     public void createAddressBook(String name) {
         repository.createAddressBook(name);
     }
@@ -90,14 +91,39 @@ public class AddressBookService {
         repository.readContactsFromJSON(filePath);
     }
     
-    public List<Contact> getAllContactsFromDB() {
-        return repository.getAllContactsFromDB();
-    }
     
-
     public AddressBookService() {
         repository = new AddressBookRepository();   // FIX
     }
+    
+    public boolean updateContactCity(String firstName, String city) {
 
+        boolean updated = repository.updateContactCity(firstName, city);
+
+        if(updated) {
+            contacts = repository.getAllContactsFromDB();   // sync memory with DB
+        }
+
+        return updated;
+    }
+    public AddressBookRepository getRepository() {
+        return repository;
+    }
+
+    public List<Contact> getContacts() {
+        return contacts;
+    }
+    
+    public List<Contact> getAllContactsFromDB() {
+        contacts = repository.getAllContactsFromDB();
+        return contacts;
+    }
+    public Contact getContact(String firstName) {
+
+        return contacts.stream()
+                .filter(contact -> contact.getFirstName().equals(firstName))
+                .findFirst()
+                .orElse(null);
+    }
    
 }

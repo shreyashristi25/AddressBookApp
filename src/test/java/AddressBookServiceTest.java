@@ -1,19 +1,40 @@
 import static org.junit.jupiter.api.Assertions.*;
+import com.addressbook.service.*;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 import com.addressbook.service.*;
 import com.addressbook.model.*;
 
-
+import com.addressbook.*;
+import com.addressbook.repository.*;
 public class AddressBookServiceTest {
 
 	 @Test
-	    public void givenContactsInDB_whenRetrieved_shouldReturnList() {
+	 public void givenContactsInDB_whenRetrieved_shouldReturnList() {
 
-	        AddressBookService service = new AddressBookService();
+		 AddressBookService service = new AddressBookService();
+		 
+		 List<Contact> contacts = service.getAllContactsFromDB();
 
-	        List<Contact> contacts = service.getAllContactsFromDB();
+		 assertNotNull(contacts);
+	 }
+	 
+	 AddressBookService addressBookService = new AddressBookService();   // ✅ FIX
+	 @Test
+	 void givenNewCity_whenUpdated_shouldSyncWithDB() {
 
-	        assertNotNull(contacts);
-	    }
+	     addressBookService.getAllContactsFromDB();   // load DB data
+
+	     addressBookService.updateContactCity("Bill", "Pune");
+
+	     Contact contactFromDB = addressBookService.getContact("Bill");
+
+	     Contact contactInMemory = addressBookService.getContacts()
+	             .stream()
+	             .filter(c -> c.getFirstName().equals("Bill"))
+	             .findFirst()
+	             .orElse(null);
+
+	     assertEquals(contactFromDB, contactInMemory);
+	 }
 }

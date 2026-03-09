@@ -70,16 +70,16 @@ public class Contact {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj)
-            return true;
+        if (this == obj) return true;
 
-        if (obj == null || getClass() != obj.getClass())
-            return false;
+        if (obj == null || getClass() != obj.getClass()) return false;
 
         Contact contact = (Contact) obj;
 
-        return firstName.equalsIgnoreCase(contact.firstName) &&
-               lastName.equalsIgnoreCase(contact.lastName);
+        return firstName.equals(contact.firstName) &&
+               lastName.equals(contact.lastName) &&
+               city.equals(contact.city) &&
+               state.equals(contact.state);
     }
 
     @Override

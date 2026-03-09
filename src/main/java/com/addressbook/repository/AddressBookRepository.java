@@ -13,6 +13,7 @@ import com.addressbook.model.Contact;
 import com.opencsv.CSVWriter;
 import com.google.gson.Gson;
 import java.sql.Statement;
+import java.sql.*;
 import java.sql.ResultSet;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
@@ -20,6 +21,7 @@ public class AddressBookRepository {
 
     private Map<String, List<Contact>> addressBooks = new HashMap<>();
 
+    private List<Contact> contacts = new ArrayList<>();
     public void createAddressBook(String name) {
         addressBooks.put(name, new ArrayList<>());
     }
@@ -184,53 +186,53 @@ public class AddressBookRepository {
     	}
     	} 
     	
-    	public void readContactsFromCSV(String filePath) {
+    public void readContactsFromCSV(String filePath) {
 
-    	    try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+    	try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
 
-    	        String[] line;
+    		String[] line;
 
-    	        while ((line = reader.readNext()) != null) {
-    	            System.out.println(String.join(", ", line));
-    	        }
+    		while ((line = reader.readNext()) != null) {
+    			System.out.println(String.join(", ", line));
+    		}
 
-    	    } catch (Exception e) {
-    	        e.printStackTrace();
-    	    }
-    	    }
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    }
     	    
-    	    public void writeContactsToJSON(String bookName, String filePath) {
+    public void writeContactsToJSON(String bookName, String filePath) {
 
-    	        List<Contact> contacts = addressBooks.get(bookName);
+    	List<Contact> contacts = addressBooks.get(bookName);
+    	
+    	Gson gson = new Gson();
 
-    	        Gson gson = new Gson();
+    	try (FileWriter writer = new FileWriter(filePath)) {
 
-    	        try (FileWriter writer = new FileWriter(filePath)) {
+    		gson.toJson(contacts, writer);
 
-    	            gson.toJson(contacts, writer);
+    		System.out.println("Contacts written to JSON file successfully");
 
-    	            System.out.println("Contacts written to JSON file successfully");
-
-    	        } catch (Exception e) {
-    	            e.printStackTrace();
-    	        }
-    	        }
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    }
     	        
-    	        public void readContactsFromJSON(String filePath) {
+    public void readContactsFromJSON(String filePath) {
 
-    	            Gson gson = new Gson();
+    	Gson gson = new Gson();
 
-    	            try (FileReader reader = new FileReader(filePath)) {
+    	try (FileReader reader = new FileReader(filePath)) {
 
-    	                Type contactListType = new TypeToken<List<Contact>>() {}.getType();
+    		Type contactListType = new TypeToken<List<Contact>>() {}.getType();
 
-    	                List<Contact> contacts = gson.fromJson(reader, contactListType);
+    		List<Contact> contacts = gson.fromJson(reader, contactListType);
 
-    	                contacts.forEach(System.out::println);
+    		contacts.forEach(System.out::println);
 
-    	            } catch (Exception e) {
-    	                e.printStackTrace();
-    	            }
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
     }
     	        
     public List<Contact> getAllContactsFromDB() {
@@ -272,5 +274,60 @@ public class AddressBookRepository {
         }
 
         return contacts;
+    }
+    
+    public boolean updateContactCity(String firstName, String city) {
+
+        String sql = "UPDATE contacts SET city=? WHERE first_name=?";
+
+        try (Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/addressbook_service", "root", "Shreya@2002");
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, city);
+            ps.setString(2, firstName);
+
+            int rows = ps.executeUpdate();
+
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    
+    public Contact getContactFromDB(String firstName) {
+
+        String sql = "SELECT * FROM contacts WHERE first_name=?";
+
+        try (Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/addressbook_service", "root", "Shreya@2002");
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, firstName);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                return new Contact(
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("address"),
+                        rs.getString("city"),
+                        rs.getString("state"),
+                        rs.getString("zip"),
+                        rs.getString("phone"),
+                        rs.getString("email")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
