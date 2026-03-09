@@ -55,4 +55,22 @@ public class AddressBookServiceTest {
 
 	     assertFalse(cityCount.isEmpty());
 	 }
+	 
+	 @Test
+	 void givenNewContact_whenAdded_shouldSyncWithDB() {
+
+		 Contact contact = new Contact(
+				 "Rahul",
+				 "Sharma",
+				 "Delhi",
+				 "DL",
+				 "110001",
+				 "9876543210",
+				 "rahul@gmail.com"
+		);
+
+	 boolean result = addressBookService.addContact(contact);
+
+	 assertTrue(result);
+	 }
 }

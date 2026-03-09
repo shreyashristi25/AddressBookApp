@@ -14,19 +14,19 @@ public class Contact {
     private String email;
 
     public Contact() {}
-    public Contact(String firstName, String lastName, String address,
-            String city, String state, String zip,
-            String phoneNumber, String email) {
+    
+    public Contact(String firstName, String lastName,
+            String city, String state,
+            String zip, String phoneNumber, String email) {
 
     	this.firstName = firstName;
     	this.lastName = lastName;
-    	this.address = address;
     	this.city = city;
     	this.state = state;
     	this.zip = zip;
     	this.phoneNumber = phoneNumber;
     	this.email = email;
-    }
+}
     
     public String getFirstName() {
         return firstName;
@@ -70,7 +70,14 @@ public class Contact {
     public void setZip(String zip) {
         this.zip =  zip;
     }
+    
+    public String getPhone() {
+        return phoneNumber;
+    }
 
+    public String getEmail() {
+        return email;
+    }
     @Override
     public boolean equals(Object obj) {
 

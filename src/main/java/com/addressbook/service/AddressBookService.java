@@ -138,5 +138,9 @@ public class AddressBookService {
     public Map<String, Integer> getContactCountByState() {
         return repository.getContactCountByState();
     }
+    
+    public boolean addContact(Contact contact) {
+        return repository.addNewContact(contact);
+    }
    
 }

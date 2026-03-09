@@ -258,7 +258,6 @@ public class AddressBookRepository {
                 Contact contact = new Contact(
                         rs.getString("first_name"),
                         rs.getString("last_name"),
-                        rs.getString("address"),
                         rs.getString("city"),
                         rs.getString("state"),
                         rs.getString("zip"),
@@ -275,7 +274,6 @@ public class AddressBookRepository {
 
         return contacts;
     }
-    
     public boolean updateContactCity(String firstName, String city) {
 
         String sql = "UPDATE contacts SET city=? WHERE first_name=?";
@@ -300,7 +298,7 @@ public class AddressBookRepository {
     
     public Contact getContactFromDB(String firstName) {
 
-        String sql = "SELECT * FROM contacts WHERE first_name=?";
+        String sql = "SELECT * FROM contact WHERE first_name=?";
 
         try (Connection con = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/addressbook_service", "root", "Shreya@2002");
@@ -315,7 +313,6 @@ public class AddressBookRepository {
                 return new Contact(
                         rs.getString("first_name"),
                         rs.getString("last_name"),
-                        rs.getString("address"),
                         rs.getString("city"),
                         rs.getString("state"),
                         rs.getString("zip"),
@@ -330,7 +327,6 @@ public class AddressBookRepository {
 
         return null;
     }
-    
     public List<Contact> getContactsByDateRange(String startDate, String endDate) {
 
         List<Contact> contacts = new ArrayList<>();
@@ -429,5 +425,69 @@ public class AddressBookRepository {
         }
 
         return stateCountMap;
+    }
+    
+    public boolean addNewContact(Contact contact) {
+
+        Connection connection = null;
+
+        try {
+
+            connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/addressbook_service",
+                    "root",
+                    "Shreya@2002");
+
+            connection.setAutoCommit(false); // start transaction
+
+            String insertContactQuery =
+                    "INSERT INTO contact(first_name,last_name,city,state,phone,email) VALUES(?,?,?,?,?,?)";
+
+            PreparedStatement ps1 = connection.prepareStatement(insertContactQuery,
+                    Statement.RETURN_GENERATED_KEYS);
+
+            ps1.setString(1, contact.getFirstName());
+            ps1.setString(2, contact.getLastName());
+            ps1.setString(3, contact.getCity());
+            ps1.setString(4, contact.getState());
+            ps1.setString(5, contact.getPhone());
+            ps1.setString(6, contact.getEmail());
+
+            ps1.executeUpdate();
+
+            ResultSet rs = ps1.getGeneratedKeys();
+            int contactId = 0;
+
+            if(rs.next()) {
+                contactId = rs.getInt(1);
+            }
+
+            String insertAddressBookQuery =
+                    "INSERT INTO address_book(contact_id,address_book_name) VALUES(?,?)";
+
+            PreparedStatement ps2 = connection.prepareStatement(insertAddressBookQuery);
+
+            ps2.setInt(1, contactId);
+            ps2.setString(2, "Family");
+
+            ps2.executeUpdate();
+
+            connection.commit(); // transaction success
+
+            return true;
+
+        } catch(Exception e) {
+
+            try {
+                if(connection != null)
+                    connection.rollback(); // rollback if error
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }
