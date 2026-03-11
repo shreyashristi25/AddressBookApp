@@ -1,5 +1,6 @@
 package com.addressbook;
-
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import java.util.List;
 import java.util.Scanner;
 
@@ -55,6 +56,19 @@ public class AddressBookApp {
 
         service.readContactsFromJSON(pathOfFile);
 
+        RestAssured.baseURI = "http://localhost:3000";
+
+        Contact[] contacts = RestAssured
+                .given()
+                .contentType(ContentType.JSON)
+                .get("/contacts")
+                .as(Contact[].class);
+
+        for (Contact c : contacts) {
+            System.out.println(c.getFirstName() + " " + c.getLastName());
+        }
+        
+        
         sc.close();
     }
 }

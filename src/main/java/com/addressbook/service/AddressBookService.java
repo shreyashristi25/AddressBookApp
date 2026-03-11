@@ -1,10 +1,12 @@
 package com.addressbook.service;
-
+import java.util.stream.* ;
+import com.addressbook.model.Contact;
 import java.util.*;
-
+import io.restassured.specification.ProxySpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import com.addressbook.model.Contact;
 import com.addressbook.repository.AddressBookRepository;
 
@@ -14,6 +16,10 @@ public class AddressBookService {
     @Autowired
     private AddressBookRepository repository;
 
+    public AddressBookService() {
+        repository = new AddressBookRepository(); // safe for non-Spring tests
+    }
+    
     private List<Contact> contacts = new ArrayList<>();
     public void createAddressBook(String name) {
         repository.createAddressBook(name);
@@ -91,11 +97,7 @@ public class AddressBookService {
         repository.readContactsFromJSON(filePath);
     }
     
-    
-    public AddressBookService() {
-        repository = new AddressBookRepository();   // FIX
-    }
-    
+   
     public boolean updateContactCity(String firstName, String city) {
 
         boolean updated = repository.updateContactCity(firstName, city);
@@ -139,16 +141,56 @@ public class AddressBookService {
         return repository.getContactCountByState();
     }
     
-    public boolean addContact(Contact contact) {
-        return repository.addNewContact(contact);
-    }
-   
-    public void addSampleContacts() {
-        List<Contact> contacts = new ArrayList<>();
-        contacts.add(new Contact("Rahul","Sharma","Delhi","Delhi","110001","9876543210","rahul@gmail.com"));
-        contacts.add(new Contact("Aman","Verma","Mumbai","Maharashtra","400001","9876543222","aman@gmail.com"));
-        contacts.add(new Contact("Neha","Gupta","Pune","Maharashtra","411001","9876543333","neha@gmail.com"));
+    private static final String BASE_URL = "http://localhost:3000"; // JSON server
 
-        repository.addMultipleContacts(contacts);
+    // Add a contact safely
+    public boolean addContact(Contact contact) {
+        if (contact == null) return false;
+
+        try {
+            Map<String, Object> contactMap = Map.of(
+                    "firstName", contact.getFirstName(),
+                    "lastName", contact.getLastName(),
+                    "city", contact.getCity(),
+                    "state", contact.getState(),
+                    "zip", contact.getZip(),
+                    "phoneNumber", contact.getPhone(),
+                    "email", contact.getEmail()
+            );
+
+            RestAssured.given()
+                    .baseUri(BASE_URL)
+                    .contentType(ContentType.JSON)
+                    .body(contactMap)
+                    .post("/contacts")
+                    .then()
+                    .statusCode(201);
+
+            System.out.println("Contact added successfully: " + contact.getFirstName());
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error adding contact: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Fetch all contacts from JSON server
+    public List<Contact> fetchContactsFromJsonServer() {
+        try {
+            Contact[] contactsArray = RestAssured.given()
+                    .baseUri(BASE_URL)
+                    .contentType(ContentType.JSON)
+                    .get("/contacts")
+                    .as(Contact[].class);
+
+            return Arrays.stream(contactsArray).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            System.err.println("Error fetching contacts: " + e.getMessage());
+            e.printStackTrace();
+            return List.of(); // empty list if error
+        }
     }
 }

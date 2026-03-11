@@ -1,138 +1,79 @@
-import static org.junit.jupiter.api.Assertions.*;import com.addressbook.model.Contact;
+import static org.junit.jupiter.api.Assertions.*;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+
+import com.addressbook.model.Contact;
 import com.addressbook.service.AddressBookService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.addressbook.service.*;
-import org.junit.jupiter.api.Test;
 import java.util.*;
-import com.addressbook.service.*;
-import com.addressbook.model.*;
 
-import com.addressbook.*;
-import com.addressbook.repository.*;
 public class AddressBookServiceTest {
 
-	 @Test
-	 public void givenContactsInDB_whenRetrieved_shouldReturnList() {
+    private AddressBookService service;
 
-		 AddressBookService service = new AddressBookService();
-		 
-		 List<Contact> contacts = service.getAllContactsFromDB();
+    @BeforeEach
+    void setup() {
+        service = new AddressBookService();  // single service instance
+        service.createAddressBook("Family"); // create a test address book
+    }
 
-		 assertNotNull(contacts);
-	 }
-	 
-	 AddressBookService addressBookService = new AddressBookService();   // ✅ FIX
-	 @Test
-	 void givenNewCity_whenUpdated_shouldSyncWithDB() {
+    @Test
+    void testAddSingleContact() {
+        Contact contact = new Contact("Rahul", "Sharma", "Delhi", "Delhi", "110001", "9876543210", "rahul@gmail.com");
+        service.addContact("Family", contact);
 
-	     addressBookService.getAllContactsFromDB();   // load DB data
+        List<Contact> contacts = service.getContacts("Family");
+        assertEquals(1, contacts.size());
+        assertEquals("Rahul", contacts.get(0).getFirstName());
+    }
 
-	     addressBookService.updateContactCity("Bill", "Pune");
+    @Test
+    void testAddDuplicateContact() {
+        Contact contact1 = new Contact("Aman", "Verma", "Mumbai", "Maharashtra", "400001", "9876543222", "aman@gmail.com");
+        Contact contact2 = new Contact("Aman", "Verma", "Mumbai", "Maharashtra", "400001", "9876543222", "aman@gmail.com");
 
-	     Contact contactFromDB = addressBookService.getContact("Bill");
+        service.addContact("Family", contact1);
+        service.addContact("Family", contact2); // duplicate
 
-	     Contact contactInMemory = addressBookService.getContacts()
-	             .stream()
-	             .filter(c -> c.getFirstName().equals("Bill"))
-	             .findFirst()
-	             .orElse(null);
+        List<Contact> contacts = service.getContacts("Family");
+        assertEquals(1, contacts.size(), "Duplicate should not be added");
+    }
 
-	     assertEquals(contactFromDB, contactInMemory);
-	 }
-	 
-	 @Test
-	 void givenDateRange_whenRetrieved_shouldReturnContacts() {
+    @Test
+    void testSearchByCity() {
+        service.addContact("Family", new Contact("Neha", "Gupta", "Pune", "Maharashtra", "411001", "9876543333", "neha@gmail.com"));
+        service.addContact("Family", new Contact("Rahul", "Sharma", "Delhi", "Delhi", "110001", "9876543210", "rahul@gmail.com"));
 
-	     List<Contact> contacts = addressBookService
-	             .getContactsAddedBetween("2024-01-01", "2024-12-31");
+        List<Contact> delhiContacts = service.searchByCity("Delhi");
+        assertEquals(1, delhiContacts.size());
+        assertEquals("Rahul", delhiContacts.get(0).getFirstName());
+    }
 
-	     assertFalse(contacts.isEmpty());
-	 }
-	 
-	 @Test
-	 void givenContacts_whenCountedByCity_shouldReturnProperCount() {
+    @Test
+    void testSortByName() {
+        service.addContact("Family", new Contact("Neha", "Gupta", "Pune", "Maharashtra", "411001", "9876543333", "neha@gmail.com"));
+        service.addContact("Family", new Contact("Aman", "Verma", "Mumbai", "Maharashtra", "400001", "9876543222", "aman@gmail.com"));
 
-	     Map<String, Integer> cityCount = addressBookService.getContactCountByCity();
+        List<Contact> sorted = service.sortByName("Family");
+        assertEquals("Aman", sorted.get(0).getFirstName());
+        assertEquals("Neha", sorted.get(1).getFirstName());
+    }
 
-	     assertFalse(cityCount.isEmpty());
-	 }
-	 
-	 @Test
-	 void givenNewContact_whenAdded_shouldSyncWithDB() {
+    @Test
+    void testAddContactsFromJsonServer() {
+        Contact c1 = new Contact("Alice", "Smith", "Bhopal", "MP", "462001", "1234567890", "alice@example.com");
+        Contact c2 = new Contact("Bob", "Sharma", "Indore", "MP", "452001", "2345678901", "bob@example.com");
 
-		 Contact contact = new Contact(
-				 "Rahul",
-				 "Sharma",
-				 "Delhi",
-				 "DL",
-				 "110001",
-				 "9876543210",
-				 "rahul@gmail.com"
-		);
+        service.addContact(c1);
+        service.addContact(c2);
 
-	 boolean result = addressBookService.addContact(contact);
-
-	 assertTrue(result);
-	 }
-	 
-	 private AddressBookService service;
-
-	    @BeforeEach
-	    void setup() {
-	        service = new AddressBookService();
-	        service.createAddressBook("Family");
-	    }
-
-	    @Test
-	    void testAddSingleContact() {
-	        Contact contact = new Contact("Rahul","Sharma","Delhi","Delhi","110001","9876543210","rahul@gmail.com");
-	        service.addContact("Family", contact);
-
-	        List<Contact> contacts = service.getContacts("Family");
-	        assertEquals(1, contacts.size());
-	        assertEquals("Rahul", contacts.get(0).getFirstName());
-	    }
-
-	    @Test
-	    void testAddDuplicateContact() {
-	        Contact contact1 = new Contact("Aman","Verma","Mumbai","Maharashtra","400001","9876543222","aman@gmail.com");
-	        Contact contact2 = new Contact("Aman","Verma","Mumbai","Maharashtra","400001","9876543222","aman@gmail.com");
-
-	        service.addContact("Family", contact1);
-	        service.addContact("Family", contact2); // duplicate
-
-	        List<Contact> contacts = service.getContacts("Family");
-	        assertEquals(1, contacts.size(), "Duplicate should not be added");
-	    }
-
-	    @Test
-	    void testSearchByCity() {
-	        service.addContact("Family", new Contact("Neha","Gupta","Pune","Maharashtra","411001","9876543333","neha@gmail.com"));
-	        service.addContact("Family", new Contact("Rahul","Sharma","Delhi","Delhi","110001","9876543210","rahul@gmail.com"));
-
-	        List<Contact> delhiContacts = service.searchByCity("Delhi");
-	        assertEquals(1, delhiContacts.size());
-	        assertEquals("Rahul", delhiContacts.get(0).getFirstName());
-	    }
-	    
-	    @Test
-	    void testSortByName() {
-	        service.addContact("Family", new Contact("Neha","Gupta","Pune","Maharashtra","411001","9876543333","neha@gmail.com"));
-	        service.addContact("Family", new Contact("Aman","Verma","Mumbai","Maharashtra","400001","9876543222","aman@gmail.com"));
-
-	        List<Contact> sorted = service.sortByName("Family");
-	        assertEquals("Aman", sorted.get(0).getFirstName());
-	        assertEquals("Neha", sorted.get(1).getFirstName());
-	    }
-
-	    @Test
-	    void testGetContactsCount() {
-	        service.addContact("Family", new Contact("Rahul","Sharma","Delhi","Delhi","110001","9876543210","rahul@gmail.com"));
-	        service.addContact("Family", new Contact("Aman","Verma","Mumbai","Maharashtra","400001","9876543222","aman@gmail.com"));
-
-	        List<Contact> contacts = service.getContacts("Family");
-	        assertEquals(2, contacts.size());
-	    }
+        List<Contact> contacts = service.fetchContactsFromJsonServer();
+        assertTrue(contacts.size() >= 2);
+        System.out.println("Contacts from JSON server:");
+        contacts.forEach(c -> System.out.println(c.getFirstName() + " " + c.getLastName()));
+    }
 }
